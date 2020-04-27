@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
+import matplotlib.pyplot as plt
 import MeCab
 import pytest
 
@@ -39,8 +40,12 @@ def wakati_without_pp(text: str) -> str:
 
 def tfidf(curpus: list) -> (list,np.ndarray):
     vectorizer = TfidfVectorizer()
-    X = vectorizer.fit_transform(curpus)
-    return vectorizer.get_feature_names(), X.toarray()
+    X = vectorizer.fit_transform(curpus).toarray()
+    columns =  vectorizer.get_feature_names()
+    for row in X:
+        plt.bar(columns, row)
+        plt.show()
+    return columns, X
 
 curpus = ["I want to do natural language processing without thinking about it.",
           "I want to do competition programming without thinking about it.",
@@ -53,8 +58,6 @@ print(tfidf(curpus))
 def test_mecabstr_list():
    test = "助動詞,*,*,*,特殊・タイ,基本形,たい,タイ,タイ"
    ans = ["助動詞","*","*","*","特殊・タイ","基本形","たい","タイ","タイ"]
-   print(ans)
-   print(mecabstr_list(test)[0])
    assert ans == mecabstr_list(test)
 
 def test_wakati():
@@ -70,7 +73,11 @@ def test_tfidf():
            "I want to do an image search without thinking about it."
     ]
     feature_name_ans = ['about', 'an', 'competition', 'do', 'image', 'it', 'language', 'natural', 'processing', 'programming', 'search', 'thinking', 'to', 'want', 'without']
-    matrix_ans       = np.array([[0.25318288, 0., 0., 0.25318288, 0.,0.25318288, 0.42867587, 0.42867587, 0.42867587, 0.,0., 0.25318288, 0.25318288, 0.25318288, 0.25318288],[0.28023746,0.,0.47448327,0.28023746,0.,0.28023746,0.,0.,0.,0.47448327,0.,0.28023746,0.28023746,0.28023746,0.28023746],[0.25318288,0.42867587,0.,0.25318288,0.42867587,0.25318288,0.,0.,0.,0.,0.42867587,0.25318288,0.25318288,0.25318288,0.25318288]])
+    matrix_ans       = np.array([
+    [0.25318288, 0., 0., 0.25318288, 0.,0.25318288, 0.42867587, 0.42867587, 0.42867587, 0.,0., 0.25318288, 0.25318288, 0.25318288, 0.25318288],
+    [0.28023746,0.,0.47448327,0.28023746,0.,0.28023746,0.,0.,0.,0.47448327,0.,0.28023746,0.28023746,0.28023746,0.28023746],
+    [0.25318288,0.42867587,0.,0.25318288,0.42867587,0.25318288,0.,0.,0.,0.,0.42867587,0.25318288,0.25318288,0.25318288,0.25318288]])
     feature_name_test,matrix_test = tfidf(curpus)
     assert feature_name_test == feature_name_ans
-    assert (matrix_test == matrix_ans).all()
+    assert (matrix_ans == np.round(matrix_test,decimals=8)).all()
+
