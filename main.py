@@ -1,10 +1,40 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from sklearn.feature_extraction.text import TfidfVectorizer
+import gensim 
+from gensim import corpora
+from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 import MeCab
 import pytest
+from pprint import pprint
+
+def lda():
+    documents = ["Human machine interface for lab abc computer applications",
+                 "A survey of user opingion of computer system response time",
+                 "The EPS user interface management system",
+                 "System and human system engineering testing of EPS",
+                 "Relation of user perceived response time to error measurement",
+                 "The generation of random binary unordered trees",
+                 "The intersection graph of paths in trees",
+                 "Graph minors IV Widths of trees and well quasi ordering",
+                 "Graph minors A survey"]
+    stop_words = set('for a of the and to in'.split())
+    texts = [[word for word in document.lower().split() if word not in stop_words] for document in documents]
+    frequency = defaultdict(int)
+    for text in texts:
+         for token in text:
+            frequency[token] += 1
+    texts = [[token for token in text if frequency[token] > 1] for text in texts]
+    dictionary = corpora.Dictionary(texts)
+    corpus = [dictionary.doc2bow(text) for text in texts]
+    lda = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=5, id2word=dictionary)
+    test_documents = ["Computer themselves and software yet to be developed will revolutionize the way we learn"]
+    test_texts = [[word for word in document.lower().split()] for document in test_documents]
+    test_corpus = [dictionary.doc2bow(text) for text in test_texts]
+    for topics_per_document in lda[test_corpus]:
+        pprint(topics_per_document)
 
 def mecabstr_list(text: str) -> list:
     ans_list = []
@@ -47,11 +77,8 @@ def tfidf(curpus: list) -> (list,np.ndarray):
         plt.show()
     return columns, X
 
-curpus = ["I want to do natural language processing without thinking about it.",
-          "I want to do competition programming without thinking about it.",
-          "I want to do an image search without thinking about it."
-]
-print(tfidf(curpus))
+lda()
+
 ##
 ##            テスト
 ##
