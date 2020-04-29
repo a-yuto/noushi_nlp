@@ -10,16 +10,7 @@ import MeCab
 import pytest
 from pprint import pprint
 
-def lda():
-    documents = ["Human machine interface for lab abc computer applications",
-                 "A survey of user opingion of computer system response time",
-                 "The EPS user interface management system",
-                 "System and human system engineering testing of EPS",
-                 "Relation of user perceived response time to error measurement",
-                 "The generation of random binary unordered trees",
-                 "The intersection graph of paths in trees",
-                 "Graph minors IV Widths of trees and well quasi ordering",
-                 "Graph minors A survey"]
+def lda(documents: list,test: list) -> 'LdaModel':
     stop_words = set('for a of the and to in'.split())
     texts = [[word for word in document.lower().split() if word not in stop_words] for document in documents]
     frequency = defaultdict(int)
@@ -30,11 +21,12 @@ def lda():
     dictionary = corpora.Dictionary(texts)
     corpus = [dictionary.doc2bow(text) for text in texts]
     lda = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=5, id2word=dictionary)
-    test_documents = ["Computer themselves and software yet to be developed will revolutionize the way we learn"]
     test_texts = [[word for word in document.lower().split()] for document in test_documents]
+    print(test_texts)
     test_corpus = [dictionary.doc2bow(text) for text in test_texts]
     for topics_per_document in lda[test_corpus]:
         pprint(topics_per_document)
+    return lda
 
 def mecabstr_list(text: str) -> list:
     ans_list = []
@@ -77,7 +69,20 @@ def tfidf(curpus: list) -> (list,np.ndarray):
         plt.show()
     return columns, X
 
-lda()
+
+documents = [
+    "Human machine interface for lab abc computer applications",
+    "A survey of user opingion of computer system response time",
+    "The EPS user interface management system",
+    "System and human system engineering testing of EPS",
+    "Relation of user perceived response time to error measurement",
+    "The generation of random binary unordered trees",
+    "The intersection graph of paths in trees",
+    "Graph minors IV Widths of trees and well quasi ordering",
+    "Graph minors A survey"
+]
+test_documents = ["Computer themselves and software yet to be developed will revolutionize the way we learn"]
+lda(documents,test_documents)
 
 ##
 ##            テスト
