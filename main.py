@@ -56,7 +56,6 @@ def wakati_without_pp(text: str) -> str:
             continue        
         ans_text += list_node[6] + " "
         node = node.next
-        print(list_node[6])
     return ans_text + "\n"
 
 
