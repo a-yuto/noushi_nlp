@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from sklearn.feature_extraction.text import TfidfVectorizer
-import gensim 
-from gensim import corpora
 from collections import defaultdict
-import numpy as np
+from gensim import corpora
+from pprint import pprint
 import matplotlib.pyplot as plt
+import numpy as np
+import gensim
 import MeCab
 import pytest
-from pprint import pprint
 
 def lda(documents: list,test: list) -> 'LdaModel':
     stop_words = set('for a of the and to in'.split())
@@ -56,7 +56,6 @@ def wakati_without_pp(text: str) -> str:
             continue        
         ans_text += list_node[6] + " "
         node = node.next
-        print(list_node[6])
     return ans_text + "\n"
 
 
@@ -70,19 +69,6 @@ def tfidf(curpus: list) -> (list,np.ndarray):
     return columns, X
 
 
-documents = [
-    "Human machine interface for lab abc computer applications",
-    "A survey of user opingion of computer system response time",
-    "The EPS user interface management system",
-    "System and human system engineering testing of EPS",
-    "Relation of user perceived response time to error measurement",
-    "The generation of random binary unordered trees",
-    "The intersection graph of paths in trees",
-    "Graph minors IV Widths of trees and well quasi ordering",
-    "Graph minors A survey"
-]
-test_documents = ["Computer themselves and software yet to be developed will revolutionize the way we learn"]
-lda(documents,test_documents)
 
 ##
 ##            テスト
